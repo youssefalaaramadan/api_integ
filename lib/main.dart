@@ -37,66 +37,63 @@ class MyApiExample extends StatefulWidget {
 
 class _MyApiExampleState extends State<MyApiExample> {
 
-  late String? name;
-  late int? age;
-  late String? country;
+  String name = "amr";
+  int age = 22;
+  String country = "New Zealand";
 
+bool awaitData = true;
 
   getDataFromApi() async {
-    Response response = await Dio()
-        .get("https://run.mocky.io/v3/4c5757c1-a331-46a5-8b37-646fac6bbb23");
-      print(response.data); 
+    Response  response = await Dio()
+        .get("https://run.mocky.io/v3/e7e27bb5-dade-4c65-90ad-f0c6634fa2bc");
+      //print(response.data); 
+awaitData = false;
+setState(() {
+  
+    name = response.data["name"];
+    age = response.data["age"];
+    country = response.data["country"];
+});
 
-
-    // name = response.data["name"];
-    // age = response.data["age"];
-    // country = response.data["country"];
-
-    // print(name);
+     print(age);
   }
   @override
+  void initState(){
+    super.initState();
+    getDataFromApi();
+  }
   Widget build(BuildContext context) {
     
     return Scaffold(
-      appBar: AppBar(
-       
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-    
-        title: Text(widget.title),
-      ),
-      body: Center(
-      
-        child: SafeArea(
-          child: Column(
-           
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-                Text(
-                'Name',
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-                Text(
-                'Age',
-              ),
-              SizedBox(
-                height: 20,
-              ),
-                // ignore: prefer_const_constructors
-                Text(
-                'Country',
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(onPressed: (){
-                getDataFromApi();
-              }, child: const Text('Get data!'),)
-            ],
+      body:
+        awaitData? 
+         Center(child: CircularProgressIndicator(color: Colors.lightBlueAccent,),)
+        :
+      SafeArea(
+          child: Center(
+            child: Column(
+             
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                  Text(name),
+                const SizedBox(
+                  height: 20,
+                ),
+                  Text(age.toString()),
+                SizedBox(
+                  height: 20,
+                ),
+                  Text(country),
+                SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(onPressed: (){
+                  getDataFromApi();
+                }, child: const Text('Get data!'),)
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
